@@ -1,0 +1,95 @@
+oric-ula README
+===============
+
+Goal
+----
+Produce RTL for the Oric ULA which
+* can be simulated
+* is synthesizable into FPGA
+* is clear and maintainable
+* is equivalent to the original Oric ULA
+
+Plan
+----
+* Complete the netlist [DONE]
+    - Start from 001_top_unprocessed.v
+    - Add ports as per MJB comments in 006_mjb_sorted.v
+    - Add shortcuts to repair nets, also per MJB comments
+    - Double check and correct polarity of outputs
+* Autoextract RTL from netlist using tractor tool [DONE]
+* Write equivalent but more maintainable RTL [DONE]
+* Use testbench to check autoextract RTL against hand-written [DONE]
+* Get permission from Mike Brown to add his files to this repo
+* Compare everything against Mike Brown's analysis
+* Currently autoextracted RTL has somewhat awkward initial values of 1'b1 in
+  signal declarations. In practice this gives flip flop the initial value of 1'b0.
+  Use of initial values hurts, would look nicer with a proper reset
+* Document cycle timing of memory interface
+
+Bugs
+----
+* Might the polarity of CLK be wrong?
+  We have flops on rising edge of CLK.
+  But oscilloscope pictures here
+  https://oric.signal11.org.uk/files/pub/ula-dieshot/OricAtmosUnofficialULAGuide-2.00-WithSchems.pdf
+  look to have outputs toggling mainly on falling edge of 12MHz CLK.
+  Also on page 50 we have CLK_OUT on falling edge of CLK_IN.
+
+Ports renamed in oric_ula.v compared to 006_mjb_sorted.v
+--------------------------------------------------------
+CLK     (was CLKIN)
+RnW     (was R/~W)
+WE      (was WREN)
+nIO     (was ~IO)
+nROM    (was ~ROMSEL)
+MXSEL   (was DRAM mux sel)
+RED     (was R)
+GREEN   (was G)
+BLUE    (was B)
+SYNC    (was ~COMPSYNC)
+
+Comparison to Mike Brown's (MJB) analysis
+-----------------------------------------
+.-------------------+------+------+------------------------------------------.
+| Gate type         | MJB  | Here | Status                                   |
++-------------------+------+------+------------------------------------------+
+| Transmission gate | 289  | 289  | OK                                       |
++-------------------+------+------+------------------------------------------+
+| Inverter          | 401  | 419  | OK: 401+17+1=419                         |
+|                   |      |      | MJB has 17 nand2s w. shorted inputs      |
+|                   |      |      | MJB has 1 nand2 w. VDD as input          |
++-------------------+------+------+------------------------------------------+
+| nand2             | 224  | 206  | OK: 224-17-1-3+3=206                     |
+|                   |      |      | MJB has 17 nand2s w. shorted inputs      |
+|                   |      |      | MJB has 1 nand2 w. VDD as input          |
+|                   |      |      | MJB has 3 nand3s w. VDD as input         |
+|                   |      |      | 3 nands are in oai21                     |
+|                   |      |      | (I_225_D, I_545_D, I_865_D)              |
++-------------------+------+------+------------------------------------------+
+| nand3             | 44   | 40   | OK: 44-3-1=40                            |
+|                   |      |      | MJB has 3 nand3s w. VDD as input         |
+|                   |      |      | (I_2335_D, I_3291_D, I_3611_D)           |
+|                   |      |      | I_3295_D has VSS in, constant high       |
++-------------------+------+------+------------------------------------------+
+| nand4             | 6    | 6    | OK                                       |
++-------------------+------+------+------------------------------------------+
+| nor2              | 22   | 21   | OK: 22-1=21                              |
+|                   |      |      | 1 nor2 is used in aoi21                  |
++-------------------+------+------+------------------------------------------+
+| nor3              | 5    | 5    | OK                                       |
++-------------------+------+------+------------------------------------------+
+| aoi21             | 1    | 1    | OK (I_1962_D)                            |
++-------------------+------+------+------------------------------------------+
+| oai21             | 3    | 3    | OK (I_225_D, I_545_D, I_865_D)           |
++-------------------+------+------+------------------------------------------+
+| Tristate buffer   | 7    | -    | Not implemented                          |
+'-------------------+------+------+------------------------------------------'
+
+References
+----------
+* California Devices Inc and the HCS10017
+  https://forum.defence-force.org/viewtopic.php?f=23&p=17909&sid=da58b20e0a04593a013389f858111e12#p17908
+* Californa Devices and semicustom arrays, EDN 5 apr 1980
+  https://www.edn.com/uncommitted-ic-logic/
+* ULA Decapped!
+  http://oric.signal11.org.uk/html/ula-dieshot.htm
