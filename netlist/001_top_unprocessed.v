@@ -1,3 +1,18 @@
+//----------------------------------------------------------------------------
+//
+//  CMOS transistor netlist for the Oric HCS10017 ULA
+//
+//  Generated from an ULA die photograph in 2018 by Mike Connors, Datel
+//  https://www.rawscience.co.uk/
+//
+//  Originally published by Mike Brown
+//  https://oric.signal11.org.uk/html/ula-dieshot.htm
+//
+//  Re-used in oric-ula project by Erik Persson, 2023
+//  https://github.com/erik-persson/oric-ula
+//
+//----------------------------------------------------------------------------
+
 module Top();
 supply1  VDD;
 supply0  VSS;
