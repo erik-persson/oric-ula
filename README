@@ -19,7 +19,8 @@ Plan
 * Autoextract RTL from netlist using tractor tool [DONE]
 * Write equivalent but more maintainable RTL [DONE]
 * Use testbench to check autoextract RTL against hand-written [DONE]
-* Get permission from Mike Brown to add his files to this repo
+* Get permission from Mike Brown to add his files to this repo [DONE]
+* Get permission from Mike Connors to add his files to this repo [DONE]
 * Compare everything against Mike Brown's analysis
 * Currently autoextracted RTL has somewhat awkward initial values of 1'b1 in
   signal declarations. In practice this gives flip flop the initial value of 1'b0.
