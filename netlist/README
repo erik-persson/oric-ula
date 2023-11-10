@@ -1,5 +1,40 @@
+Oric HCS10017 ULA netlist
+=========================
+
+Transistor netlist for the ULA with derivative variants.
+
 Verilog original files from Mike Connors at Datel
 https://www.rawscience.co.uk
 
 Processed and organized by Mike Brown (oric@signal11.org.uk)
 http://oric.signal11.org.uk
+
+Converted to RTL by Erik Persson
+https://github.com/erik-persson/oric-ula
+
+Directory contents
+------------------
+
+001_top_unprocessed.v
+    Raw transistor netlist provided by Mike Connors
+    Generated from a die photograph. P and N transistors are represented
+    by module instances (generic_pmos and generic_nmos).
+
+002_top_processed.v
+    Partially converted netlist from Mike Connors
+    This file replaces many transistors with Verilog gate primitives and
+    transmission gates (generic_cmos).
+
+006_mjb_sorted.v
+    Processed and organized by Mike Brown. This includes several manual
+    corrections, and rich annotation of gate-level structures.
+
+007_ep_connected.v
+    Based on the raw transistor netlist 001_top_unprocessed.v
+    Ports have been added, guided by 006_mjb_sorted.v
+    Nets have been repaired based on comments in 006_mjb_sorted.v
+
+008_ep_extracted.v
+    Automatic conversion of 007_ep_connected.v to RTL form
+    Two-phase latch representation without tri-state elements
+    Can be simulated using a plain digital simulator such as iverilog.
